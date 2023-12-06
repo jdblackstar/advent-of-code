@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 )
 
 /*
@@ -34,8 +35,8 @@ Consider your entire calibration document. What is the sum of all of the calibra
 
 */
 
-func main() {
-	file, err := os.Open("1_input.txt")
+func part_1() {
+	file, err := os.Open("2023/1/input.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,3 +68,76 @@ func main() {
 	}
 }
 
+var wordToNumber = map[string]string{
+	"one":   "1",
+	"two":   "2",
+	"three": "3",
+	"four":  "4",
+	"five":  "5",
+	"six":   "6",
+	"seven": "7",
+	"eight": "8",
+	"nine":  "9",
+}
+
+func part_2() {
+	filePath := "2023/1/input.txt"
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	sum := 0
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		firstDigit, lastDigit := "", ""
+		found := false
+
+		for i := 0; i < len(line); i++ {
+			if '0' <= line[i] && line[i] <= '9' {
+				if !found {
+					firstDigit = string(line[i])
+					found = true
+				}
+				lastDigit = string(line[i])
+			}
+
+			for j := i + 1; j <= len(line); j++ {
+				substr := line[i:j]
+				for word := range wordToNumber {
+					if substr == word {
+						if !found {
+							firstDigit = wordToNumber[word]
+							found = true
+						}
+						lastDigit = wordToNumber[word]
+					}
+				}
+			}
+		}
+
+		if firstDigit != "" && lastDigit != "" {
+			value, err := strconv.Atoi(firstDigit + lastDigit)
+			if err != nil {
+				log.Fatal(err)
+			}
+			sum += value
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(sum)
+}
+
+func main() {
+	fmt.Print("Solution for part 1: ")
+	part_1()
+	fmt.Print("Solution for part 2: ")
+	part_2()
+}
