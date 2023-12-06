@@ -46,7 +46,7 @@ func openFile(filePath string) *os.File {
 }
 
 type GameMaximum struct {
-	ID    int
+	ID           int
 	GameMaxRed   int
 	GameMaxGreen int
 	GameMaxBlue  int
@@ -113,7 +113,6 @@ func processGames(games []GameMaximum) int {
 func part_1() {
 	file := openFile("2023/2/input.txt")
 	defer file.Close()
-	
 
 	scanner := bufio.NewScanner(file)
 	var games []GameMaximum
@@ -154,13 +153,13 @@ For each game, find the minimum set of cubes that must have been present. What i
 */
 
 type Round struct {
-	Red int
+	Red   int
 	Green int
-	Blue int
+	Blue  int
 }
 
 type Game struct {
-	ID int
+	ID     int
 	Rounds []Round
 }
 
