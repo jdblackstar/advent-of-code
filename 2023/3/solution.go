@@ -1,6 +1,7 @@
 package main
 
 import (
+	helpers "github.com/jdblackstar/advent_of_code"
 	"bufio"
 	"fmt"
 	"log"
@@ -48,7 +49,7 @@ func openFile(filePath string) *os.File {
 }
 
 func getPossibleSymbols(filepath string) []rune {
-	file := openFile(filepath)
+	file := helpers.OpenFile(filepath)
 	scanner := bufio.NewScanner(file)
 	var symbols []rune
 	for scanner.Scan() {
