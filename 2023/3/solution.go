@@ -1,12 +1,11 @@
 package main
 
 import (
-	helpers "github.com/jdblackstar/advent_of_code"
 	"bufio"
 	"fmt"
-	"log"
-	"os"
 	"unicode"
+	"strconv"
+	helpers "github.com/jdblackstar/advent_of_code"
 )
 
 /*
@@ -40,133 +39,101 @@ In this schematic, two numbers are not part numbers because they are not adjacen
 Of course, the actual engine schematic is much larger. What is the sum of all of the part numbers in the engine schematic?
 */
 
-func openFile(filePath string) *os.File {
-	file, err := os.Open(filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return file
+type Coordinate struct {
+	X int
+	Y int
 }
 
-func getPossibleSymbols(filepath string) []rune {
+func identifyNumbers(filepath string) map[Coordinate]int {
 	file := helpers.OpenFile(filepath)
+	defer file.Close()
+
 	scanner := bufio.NewScanner(file)
-	var symbols []rune
+	numbers := make(map[Coordinate]int)
+	y := 0
+
 	for scanner.Scan() {
 		line := scanner.Text()
-		for _, char := range line {
-			if !unicode.IsNumber(char) && char != '.' {
-				symbols = append(symbols, char)
+		number := 0
+		startX := -1
+		for x, char := range line {
+			if unicode.IsDigit(char) {
+				if number == 0 {
+					startX = x
+				}
+				number = number*10 + int(char-'0')
+			} else {
+				if number != 0 {
+					coord := Coordinate{X: startX, Y: y}
+					numbers[coord] = number
+					fmt.Printf("Identified number %d at (%d, %d)\n", number, startX, y) // print the identified number
+					number = 0
+				}
+			}
+		}
+		if number != 0 {
+			coord := Coordinate{X: startX, Y: y}
+			numbers[coord] = number
+			fmt.Printf("Identified number %d at (%d, %d)\n", number, startX, y) // print the identified number
+		}
+		y++
+	}
+	return numbers
+}
+
+func checkAroundNumber(coord Coordinate, numLength int, symbols map[Coordinate]rune) bool {
+	directions := []Coordinate{
+		{-1, -1}, {0, -1}, {1, -1},
+		{-1, 0},           {1, 0},
+		{-1, 1},  {0, 1},  {1, 1},
+	}
+
+	for i := 0; i < numLength; i++ {
+		currentCoord := Coordinate{X: coord.X + i, Y: coord.Y}
+		for _, direction := range directions {
+			adjacentCoord := Coordinate{X: currentCoord.X + direction.X, Y: currentCoord.Y + direction.Y}
+			if _, ok := symbols[adjacentCoord]; ok {
+				return true
 			}
 		}
 	}
-	return symbols
 
-}
-
-func contains(runeSlice []rune, targetRune rune) bool {
-	for _, currentRune := range runeSlice {
-		if currentRune == targetRune {
-			return true
-		}
-	}
 	return false
 }
 
-func isLineAdjacentToSymbol(current string, previous string, next string, symbols []rune) []bool {
-	length := len(current)
-	result := make([]bool, length)
+func getPossibleSymbols(filepath string) map[Coordinate]rune {
+	file := helpers.OpenFile(filepath)
+	defer file.Close()
 
-	for i := 0; i < length; i++ {
-		if unicode.IsDigit(rune(current[i])) {
-			// check previous line
-			if previous != "" {
-				if i > 0 && contains(symbols, rune(previous[i-1])) {
-					result[i] = true
-				}
-				if contains(symbols, rune(previous[i])) {
-					result[i] = true
-					continue
-				}
-				if i < len(previous)-1 && contains(symbols, rune(previous[i+1])) {
-					result[i] = true
-					continue
-				}
-			}
-			// check next line
-			if next != "" {
-				if i > 0 && contains(symbols, rune(next[i-1])) {
-					result[i] = true
-					continue
-				}
-				if contains(symbols, rune(next[i])) {
-					result[i] = true
-					continue
-				}
-				if i < len(next)-1 && contains(symbols, rune(next[i+1])) {
-					result[i] = true
-					continue
-				}
-			}
-			// check current line
-			if i > 0 && contains(symbols, rune(current[i-1])) {
-				result[i] = true
-				continue
-			}
-			if i < length-1 && contains(symbols, rune(current[i+1])) {
-				result[i] = true
-				continue
+	scanner := bufio.NewScanner(file)
+	symbols := make(map[Coordinate]rune)
+	y := 0
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		for x, char := range line {
+			if !unicode.IsNumber(char) && char != '.' {
+				coord := Coordinate{X: x, Y: y}
+				symbols[coord] = char
+				fmt.Printf("Identified symbol %c at (%d, %d)\n", char, x, y)
 			}
 		}
+		y++
 	}
-	return result
+	return symbols
 }
 
 func part_1() {
-	file := openFile("2023/3/input.txt")
-	defer file.Close()
+	filepath := "3/input.txt"
+	symbols := getPossibleSymbols(filepath)
+	numbers := identifyNumbers(filepath)
 
-	symbols := getPossibleSymbols("2023/3/input.txt")
-
-	scanner := bufio.NewScanner(file)
-	var previous, current, next string
 	sum := 0
-	num := 0
-	if scanner.Scan() {
-		current = scanner.Text()
-	}
-	if scanner.Scan() {
-		next = scanner.Text()
-	}
-
-	for scanner.Scan() {
-		previous, current, next = current, next, scanner.Text()
-		for i, char := range current {
-			if unicode.IsDigit(char) && isLineAdjacentToSymbol(current, previous, next, symbols)[i] {
-				num = num*10 + int(char-'0')
-			} else {
-				sum += num
-				num = 0
-			}
-		}
-		sum += num
-		num = 0
-	}
-
-	// process the last line
-	previous, current = current, next
-	for i, char := range current {
-		if unicode.IsDigit(char) && isLineAdjacentToSymbol(current, previous, "", symbols)[i] {
-			num = num*10 + int(char-'0')
-		} else {
+	for coord, num := range numbers {
+		numLength := len(strconv.Itoa(num)) // calculate the length of the number
+		if checkAroundNumber(coord, numLength, symbols) {
 			sum += num
-			num = 0
 		}
-	}
-	sum += num
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
 	}
 
 	fmt.Println(sum)

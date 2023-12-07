@@ -103,7 +103,7 @@ func processGames(games []GameMaximum) int {
 }
 
 func part_1() {
-	file := helpers.OpenFile("2023/2/input.txt")
+	file := helpers.OpenFile("2/input.txt")
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
@@ -213,7 +213,7 @@ func parseGame(gameStr string) Game {
 }
 
 func part_2() {
-	file := helpers.OpenFile("2023/2/input.txt")
+	file := helpers.OpenFile("2/input.txt")
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)

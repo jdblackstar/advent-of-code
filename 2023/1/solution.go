@@ -34,7 +34,7 @@ Consider your entire calibration document. What is the sum of all of the calibra
 */
 
 func part_1() {
-	file := helpers.OpenFile("2023/1/input.txt")
+	file := helpers.OpenFile("1/input.txt")
 	defer file.Close()
 
 	sum := 0
@@ -94,7 +94,7 @@ var wordToNumber = map[string]string{
 }
 
 func part_2() {
-	file := helpers.OpenFile("2023/1/input.txt")
+	file := helpers.OpenFile("1/input.txt")
 	defer file.Close()
 
 	sum := 0
