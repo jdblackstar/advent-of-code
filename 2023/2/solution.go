@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	helpers "github.com/jdblackstar/advent_of_code"
+	helpers "github.com/jdblackstar/advent-of-code"
 	"log"
 	"strconv"
 	"strings"
