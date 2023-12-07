@@ -3,9 +3,9 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"unicode"
-	"strconv"
 	helpers "github.com/jdblackstar/advent_of_code"
+	"strconv"
+	"unicode"
 )
 
 /*
@@ -84,8 +84,8 @@ func identifyNumbers(filepath string) map[Coordinate]int {
 func checkAroundNumber(coord Coordinate, numLength int, symbols map[Coordinate]rune) bool {
 	directions := []Coordinate{
 		{-1, -1}, {0, -1}, {1, -1},
-		{-1, 0},           {1, 0},
-		{-1, 1},  {0, 1},  {1, 1},
+		{-1, 0}, {1, 0},
+		{-1, 1}, {0, 1}, {1, 1},
 	}
 
 	for i := 0; i < numLength; i++ {

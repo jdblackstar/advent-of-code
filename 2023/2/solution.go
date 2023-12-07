@@ -1,9 +1,9 @@
 package main
 
 import (
-	helpers "github.com/jdblackstar/advent_of_code"
 	"bufio"
 	"fmt"
+	helpers "github.com/jdblackstar/advent_of_code"
 	"log"
 	"strconv"
 	"strings"
