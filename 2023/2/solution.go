@@ -1,6 +1,7 @@
 package main
 
 import (
+	helpers "github.com/jdblackstar/advent_of_code"
 	"bufio"
 	"fmt"
 	"log"
@@ -36,14 +37,6 @@ In the example above, games 1, 2, and 5 would have been possible if the bag had 
 
 Determine which games would have been possible if the bag had been loaded with only 12 red cubes, 13 green cubes, and 14 blue cubes. What is the sum of the IDs of those games?
 */
-
-func openFile(filePath string) *os.File {
-	file, err := os.Open(filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return file
-}
 
 type GameMaximum struct {
 	ID           int
@@ -111,7 +104,7 @@ func processGames(games []GameMaximum) int {
 }
 
 func part_1() {
-	file := openFile("2023/2/input.txt")
+	file := helpers.OpenFile("2023/2/input.txt")
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
@@ -221,7 +214,7 @@ func parseGame(gameStr string) Game {
 }
 
 func part_2() {
-	file := openFile("2023/2/input.txt")
+	file := helpers.OpenFile("2023/2/input.txt")
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)

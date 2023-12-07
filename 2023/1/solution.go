@@ -1,10 +1,10 @@
 package main
 
 import (
+	helpers "github.com/jdblackstar/advent_of_code"
 	"bufio"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 )
 
@@ -33,16 +33,8 @@ In this example, the calibration values of these four lines are 12, 38, 15, and 
 Consider your entire calibration document. What is the sum of all of the calibration values?
 */
 
-func openFile(filePath string) *os.File {
-	file, err := os.Open(filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return file
-}
-
 func part_1() {
-	file := openFile("2023/1/input.txt")
+	file := helpers.OpenFile("2023/1/input.txt")
 	defer file.Close()
 
 	sum := 0
@@ -102,7 +94,7 @@ var wordToNumber = map[string]string{
 }
 
 func part_2() {
-	file := openFile("2023/1/input.txt")
+	file := helpers.OpenFile("2023/1/input.txt")
 	defer file.Close()
 
 	sum := 0
