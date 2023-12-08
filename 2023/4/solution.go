@@ -10,10 +10,13 @@ import (
 	helpers "github.com/jdblackstar/advent-of-code"
 )
 
-func splitNumbers(input string) ([]int, []int) {
+func splitNumbers(input string) (string, []int, []int) {
 	splitInput := strings.Split(input, "|")
-	winningNumbersStr := strings.Fields(splitInput[0])
+	cardIDAndWinningNumbersStr := strings.Fields(splitInput[0])
 	ourNumbersStr := strings.Fields(splitInput[1])
+
+	cardID := cardIDAndWinningNumbersStr[0]
+	winningNumbersStr := cardIDAndWinningNumbersStr[1:]
 
 	winningNumbers := make([]int, len(winningNumbersStr))
 	ourNumbers := make([]int, len(ourNumbersStr))
@@ -28,7 +31,7 @@ func splitNumbers(input string) ([]int, []int) {
 		ourNumbers[i] = num
 	}
 
-	return winningNumbers, ourNumbers
+	return cardID, winningNumbers, ourNumbers
 }
 
 func totalPointsPerCard(winningNumbers []int, ourNumbers []int) int {
@@ -60,7 +63,8 @@ func part_1(filepath string) int {
 
 	for scanner.Scan() {
 		card := scanner.Text()
-		winningNumbers, ourNumbers := splitNumbers(card)
+		// use the blank identifier to ignore the cardID returned from this function
+		_, winningNumbers, ourNumbers := splitNumbers(card)
 		totalPoints += totalPointsPerCard(winningNumbers, ourNumbers)
 	}
 
