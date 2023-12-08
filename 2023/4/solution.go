@@ -10,28 +10,35 @@ import (
 	helpers "github.com/jdblackstar/advent-of-code"
 )
 
-func splitNumbers(input string) (string, []int, []int) {
-	splitInput := strings.Split(input, "|")
-	cardIDAndWinningNumbersStr := strings.Fields(splitInput[0])
-	ourNumbersStr := strings.Fields(splitInput[1])
+type Card struct {
+	ID int
+	WinningNumbers []int
+	OurNumbers []int
+}
 
-	cardID := cardIDAndWinningNumbersStr[0]
-	winningNumbersStr := cardIDAndWinningNumbersStr[1:]
+func splitNumbers(s string) (int, []int, []int) {
+    // Split the string on the colon first to separate the card ID from the rest
+    parts := strings.Split(s, ":")
+    cardIDStr := strings.TrimSpace(parts[0])
+    cardID, _ := strconv.Atoi(strings.Split(cardIDStr, " ")[1])
 
-	winningNumbers := make([]int, len(winningNumbersStr))
-	ourNumbers := make([]int, len(ourNumbersStr))
+    // Split the remaining string on the pipe to separate the winning numbers from our numbers
+    numbersParts := strings.Split(parts[1], "|")
+    winningNumbersStr := strings.Fields(strings.TrimSpace(numbersParts[0]))
+    ourNumbersStr := strings.Fields(strings.TrimSpace(numbersParts[1]))
 
-	for i, numStr := range winningNumbersStr {
-		num, _ := strconv.Atoi(numStr)
-		winningNumbers[i] = num
-	}
+    // Convert the number strings to integers
+    winningNumbers := make([]int, len(winningNumbersStr))
+    for i, numStr := range winningNumbersStr {
+        winningNumbers[i], _ = strconv.Atoi(numStr)
+    }
 
-	for i, numStr := range ourNumbersStr {
-		num, _ := strconv.Atoi(numStr)
-		ourNumbers[i] = num
-	}
+    ourNumbers := make([]int, len(ourNumbersStr))
+    for i, numStr := range ourNumbersStr {
+        ourNumbers[i], _ = strconv.Atoi(numStr)
+    }
 
-	return cardID, winningNumbers, ourNumbers
+    return cardID, winningNumbers, ourNumbers
 }
 
 func totalPointsPerCard(winningNumbers []int, ourNumbers []int) int {
@@ -62,10 +69,14 @@ func part_1(filepath string) int {
 	totalPoints := 0
 
 	for scanner.Scan() {
-		card := scanner.Text()
-		// use the blank identifier to ignore the cardID returned from this function
-		_, winningNumbers, ourNumbers := splitNumbers(card)
-		totalPoints += totalPointsPerCard(winningNumbers, ourNumbers)
+		cardStr := scanner.Text()
+		cardID, winningNumbers, ourNumbers := splitNumbers(cardStr)
+		card := Card{
+			ID: cardID,
+			WinningNumbers: winningNumbers,
+			OurNumbers: ourNumbers,
+		}
+		totalPoints += totalPointsPerCard(card.WinningNumbers, card.OurNumbers)
 	}
 
 	if err := scanner.Err(); err != nil {
