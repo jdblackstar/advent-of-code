@@ -16,7 +16,7 @@ type Card struct {
 	OurNumbers     []int
 }
 
-func splitNumbers(s string) (int, []int, []int) {
+func splitCardAttributes(s string) (int, []int, []int) {
 	// Split the string on the colon first to separate the card ID from the rest
 	parts := strings.Split(s, ":")
 	cardIDStr := strings.TrimSpace(parts[0])
@@ -70,7 +70,7 @@ func part_1(filepath string) int {
 
 	for scanner.Scan() {
 		cardStr := scanner.Text()
-		cardID, winningNumbers, ourNumbers := splitNumbers(cardStr)
+		cardID, winningNumbers, ourNumbers := splitCardAttributes(cardStr)
 		card := Card{
 			ID:             cardID,
 			WinningNumbers: winningNumbers,
