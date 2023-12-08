@@ -11,34 +11,34 @@ import (
 )
 
 type Card struct {
-	ID int
+	ID             int
 	WinningNumbers []int
-	OurNumbers []int
+	OurNumbers     []int
 }
 
 func splitNumbers(s string) (int, []int, []int) {
-    // Split the string on the colon first to separate the card ID from the rest
-    parts := strings.Split(s, ":")
-    cardIDStr := strings.TrimSpace(parts[0])
-    cardID, _ := strconv.Atoi(strings.Split(cardIDStr, " ")[1])
+	// Split the string on the colon first to separate the card ID from the rest
+	parts := strings.Split(s, ":")
+	cardIDStr := strings.TrimSpace(parts[0])
+	cardID, _ := strconv.Atoi(strings.Split(cardIDStr, " ")[1])
 
-    // Split the remaining string on the pipe to separate the winning numbers from our numbers
-    numbersParts := strings.Split(parts[1], "|")
-    winningNumbersStr := strings.Fields(strings.TrimSpace(numbersParts[0]))
-    ourNumbersStr := strings.Fields(strings.TrimSpace(numbersParts[1]))
+	// Split the remaining string on the pipe to separate the winning numbers from our numbers
+	numbersParts := strings.Split(parts[1], "|")
+	winningNumbersStr := strings.Fields(strings.TrimSpace(numbersParts[0]))
+	ourNumbersStr := strings.Fields(strings.TrimSpace(numbersParts[1]))
 
-    // Convert the number strings to integers
-    winningNumbers := make([]int, len(winningNumbersStr))
-    for i, numStr := range winningNumbersStr {
-        winningNumbers[i], _ = strconv.Atoi(numStr)
-    }
+	// Convert the number strings to integers
+	winningNumbers := make([]int, len(winningNumbersStr))
+	for i, numStr := range winningNumbersStr {
+		winningNumbers[i], _ = strconv.Atoi(numStr)
+	}
 
-    ourNumbers := make([]int, len(ourNumbersStr))
-    for i, numStr := range ourNumbersStr {
-        ourNumbers[i], _ = strconv.Atoi(numStr)
-    }
+	ourNumbers := make([]int, len(ourNumbersStr))
+	for i, numStr := range ourNumbersStr {
+		ourNumbers[i], _ = strconv.Atoi(numStr)
+	}
 
-    return cardID, winningNumbers, ourNumbers
+	return cardID, winningNumbers, ourNumbers
 }
 
 func totalPointsPerCard(winningNumbers []int, ourNumbers []int) int {
@@ -72,9 +72,9 @@ func part_1(filepath string) int {
 		cardStr := scanner.Text()
 		cardID, winningNumbers, ourNumbers := splitNumbers(cardStr)
 		card := Card{
-			ID: cardID,
+			ID:             cardID,
 			WinningNumbers: winningNumbers,
-			OurNumbers: ourNumbers,
+			OurNumbers:     ourNumbers,
 		}
 		totalPoints += totalPointsPerCard(card.WinningNumbers, card.OurNumbers)
 	}
