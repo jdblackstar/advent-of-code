@@ -61,6 +61,21 @@ func totalPointsPerCard(winningNumbers []int, ourNumbers []int) int {
 	return points
 }
 
+func countMatches(winningNumbers []int, ourNumbers []int) int {
+	matches := 0
+
+	for _, ourNumber := range ourNumbers {
+		for _, winningNumber := range winningNumbers {
+			if ourNumber == winningNumber {
+				matches++
+				break
+			}
+		}
+	}
+
+	return matches
+}
+
 func part_1(filepath string) int {
 	file := helpers.OpenFile(filepath)
 	defer file.Close()
@@ -86,6 +101,74 @@ func part_1(filepath string) int {
 	return totalPoints
 }
 
+type Deck struct {
+	Cards map[int]Card
+	Count int
+}
+
+func NewDeck(filepath string) *Deck {
+	file := helpers.OpenFile(filepath)
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	deck := &Deck{
+		Cards: make(map[int]Card),
+	}
+
+	for scanner.Scan() {
+		cardStr := scanner.Text()
+		cardID, winningNumbers, ourNumbers := splitCardAttributes(cardStr)
+		card := Card{
+			ID:             cardID,
+			WinningNumbers: winningNumbers,
+			OurNumbers:     ourNumbers,
+		}
+		deck.AddCard(card)
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	return deck
+}
+
+func (d *Deck) AddCard(card Card) {
+	if _, exists := d.Cards[card.ID]; exists {
+		d.Count++
+	} else {
+		log.Fatalf("Card with ID %d does not exist", card.ID)
+	}
+}
+
+func part_2(filepath string) int {
+	deck := NewDeck(filepath)
+
+	for i := 1; i <= len(deck.Cards); i++ {
+		card, exists := deck.Cards[i]
+		if !exists {
+			log.Fatalf("Card with ID %d does not exist", i)
+		}
+		matches := countMatches(card.WinningNumbers, card.OurNumbers)
+
+		for j := 0; j < matches; j++ {
+			if i+j+1 <= len(deck.Cards) {
+				nextCard, exists := deck.Cards[i+j+1]
+				if !exists {
+					log.Fatalf("Card with ID %d does not exist", i+j+1)
+				}
+				deck.AddCard(nextCard)
+			} else {
+				break
+			}
+		}
+	}
+
+	return deck.Count
+}
+
 func main() {
-	fmt.Println("Solution for part 1: ", part_1("4/input.txt"))
+	filepath := "4/input.txt"
+	fmt.Println("Solution for part 1: ", part_1(filepath))
+	fmt.Println("Solution for part 2: ", part_2(filepath))
 }
