@@ -144,7 +144,9 @@ func (d *Deck) AddCard(card Card) {
 func part_2(filepath string) int {
 	deck := NewDeck(filepath)
 
-	for i := 1; i <= len(deck.Cards); i++ {
+	maxID := len(deck.Cards)
+
+	for i := 1; i <= maxID; i++ {
 		card, exists := deck.Cards[i]
 		if !exists {
 			log.Fatalf("Card with ID %d does not exist", i)
@@ -152,11 +154,8 @@ func part_2(filepath string) int {
 		matches := countMatches(card.WinningNumbers, card.OurNumbers)
 
 		for j := 0; j < matches; j++ {
-			if i+j+1 <= len(deck.Cards) {
-				nextCard, exists := deck.Cards[i+j+1]
-				if !exists {
-					log.Fatalf("Card with ID %d does not exist", i+j+1)
-				}
+			if i+j+1 <= maxID {
+				nextCard := deck.Cards[i+j+1]
 				deck.AddCard(nextCard)
 			} else {
 				break
@@ -168,7 +167,7 @@ func part_2(filepath string) int {
 }
 
 func main() {
-	filepath := "4/input.txt"
+	filepath := "4/small.txt"
 	fmt.Println("Solution for part 1: ", part_1(filepath))
 	fmt.Println("Solution for part 2: ", part_2(filepath))
 }
