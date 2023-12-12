@@ -121,7 +121,15 @@ func main() {
 
 	maps := parseMapping(fileContent)
 
-	mappingOrder := []string{"seed-to-soil", "soil-to-fertilizer", "fertilizer-to-water", "water-to-light", "light-to-temperature", "temperature-to-humidity", "humidity-to-location"}
+	mappingOrder := []string{
+		"seed-to-soil",
+		"soil-to-fertilizer",
+		"fertilizer-to-water",
+		"water-to-light",
+		"light-to-temperature",
+		"temperature-to-humidity",
+		"humidity-to-location",
+	}
 
 	newSeeds := make([]int, len(seeds))
 	minSeed := int(^uint(0) >> 1) // set to max int value
