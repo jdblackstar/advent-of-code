@@ -59,6 +59,45 @@ func parseInput(filepath string) ([]Race, error) {
 	return races, nil
 }
 
+func parseInputCombined(filepath string) ([]Race, error) {
+	file, err := os.Open(filepath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	var races []Race
+
+	// Read the first line for time
+	var time int
+	if scanner.Scan() {
+		line := scanner.Text()
+		parts := strings.Fields(line)
+		timeStr := strings.Join(parts[1:], "")
+		time, _ = strconv.Atoi(timeStr)
+	}
+
+	// Read the second line for distance
+	var distance int
+	if scanner.Scan() {
+		line := scanner.Text()
+		parts := strings.Fields(line)
+		distanceStr := strings.Join(parts[1:], "")
+		distance, _ = strconv.Atoi(distanceStr)
+	}
+
+	// Create a single race from the time and distance
+	races = append(races, Race{Time: time, Distance: distance})
+	fmt.Printf("Parsed race with time %d and distance %d\n", time, distance) // Debug print
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return races, nil
+}
+
 func calculateWaysToWin(race Race) int {
 	waysToWin := 0
 	for i := 0; i <= race.Time; i++ {
@@ -80,12 +119,29 @@ func partOne(races []Race) int {
 	return totalWays
 }
 
+func partTwo(races []Race) int {
+	totalWays := 1
+	for _, race := range races {
+		ways := calculateWaysToWin(race)
+		totalWays *= ways
+	}
+	return totalWays
+}
+
 func main() {
 	races, err := parseInput("2023/6/input.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	result := partOne(races)
-	fmt.Println(result)
+	partOneResult := partOne(races)
+	fmt.Println(partOneResult)
+
+	races, err = parseInputCombined("2023/6/input.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	partTwoResult := partTwo(races)
+	fmt.Println(partTwoResult)
 }
