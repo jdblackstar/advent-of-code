@@ -22,7 +22,7 @@ local function solve_part1(input)
     table.sort(list2)
     
     local total = 0
-    for i = 1, #list1 do
+    for i = 1, #list1 do -- #list1 is length of list1
         local diff = math.abs(list1[i] - list2[i])
         total = total + diff
     end
@@ -32,7 +32,35 @@ end
 
 -- Part 2 solution
 local function solve_part2(input)
-    return "Not implemented yet"
+    local list1 = {}
+    local list2 = {}
+    
+    for line in input:gmatch("[^\n]+") do
+        local num1, num2 = line:match("(%d+)%s+(%d+)")
+        table.insert(list1, tonumber(num1))
+        table.insert(list2, tonumber(num2))
+    end
+    
+    table.sort(list1)
+    table.sort(list2)
+    
+    local similarity_score = 0
+    
+    for i = 1, #list1 do -- #list1 is length of list1
+        local current = list1[i]
+        local occurrences = 0
+        
+        for k = 1, #list2 do
+            if list2[k] == current then
+                occurrences = occurrences + 1
+            end
+        end
+        
+        -- Add to similarity score (number × times it appears)
+        similarity_score = similarity_score + (current * occurrences)
+    end
+    
+    return similarity_score, #list1
 end
 
 -- Main execution
